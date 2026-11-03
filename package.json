@@ -1,0 +1,10 @@
+{
+  "name": "familyclash",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A survey-style family game show: run it from a tablet or netbook, show the board on a Google TV.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT"
+}

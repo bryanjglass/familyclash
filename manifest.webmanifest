@@ -1,0 +1,12 @@
+{
+  "name": "Family Clash",
+  "short_name": "Family Clash",
+  "description": "A survey-style family game show you run from a tablet and show on the TV.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#151034",
+  "theme_color": "#151034",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

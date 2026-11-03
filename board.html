@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Family Clash — Board</title>
+  <meta name="theme-color" content="#120c2c">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="css/board.css">
+</head>
+<body>
+  <div id="board" class="board">
+    <section id="scr-waiting" class="screen active">
+      <div class="logo">Family <span>Clash</span></div>
+      <p class="wait-msg" id="wait-msg">Waiting for the host…</p>
+      <form id="room-form" class="room-form" hidden autocomplete="off">
+        <label for="room-input">Room code</label>
+        <input id="room-input" maxlength="8" autocapitalize="characters" spellcheck="false" placeholder="ABCD">
+        <button type="submit">Join</button>
+      </form>
+      <p class="wait-help" id="wait-help">On the host device, open Family Clash and tap <b>📺 Connect TV</b>.</p>
+    </section>
+
+    <section id="scr-title" class="screen">
+      <div class="logo small">Family <span>Clash</span></div>
+      <h1 id="title-name"></h1>
+      <div class="vs"><span id="vs-0"></span><em>vs</em><span id="vs-1"></span></div>
+    </section>
+
+    <section id="scr-round" class="screen">
+      <header class="round-head">
+        <div class="round-pill" id="round-pill"></div>
+        <h1 id="question"></h1>
+      </header>
+      <div class="tiles" id="tiles"></div>
+    </section>
+
+    <section id="scr-over" class="screen">
+      <div class="trophy">🏆</div>
+      <h1 id="winner"></h1>
+    </section>
+
+    <footer class="scorebar" id="scorebar" hidden>
+      <div class="team" id="team-0"><span class="t-name"></span><span class="t-score">0</span></div>
+      <div class="bank" id="bank"><span class="bank-label">Bank</span><span class="bank-val" id="bank-val">0</span></div>
+      <div class="team" id="team-1"><span class="t-name"></span><span class="t-score">0</span></div>
+    </footer>
+  </div>
+
+  <div id="strikes" class="strike-overlay" hidden></div>
+  <div id="banner" class="banner" hidden></div>
+  <div id="confetti" class="confetti"></div>
+  <button id="sound-pill" class="sound-pill" hidden>🔇 Click anywhere to turn on sound</button>
+
+  <script src="js/common.js"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/board.js"></script>
+</body>
+</html>

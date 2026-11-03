@@ -18,7 +18,7 @@ A survey-style family game show. One person (the **host**) runs the game from a 
 
 ## Features
 
-- **Game library:** create, edit, duplicate, delete, import and export (JSON) games. A sample game is included so you can play right away.
+- **Game library:** create, edit, duplicate, delete, import and export (JSON) games. It comes with **11 ready-to-play games** written for families with middle-schoolers (see below).
 - **Editor:** one card per round with a question, up to 8 answers with points, and a normal/double/triple points setting.
   - Everything autosaves.
   - Pressing Enter jumps to the next box and adds a new answer row at the end.
@@ -66,12 +66,33 @@ The host owns the whole game state. After every action it sends a full snapshot 
 index.html     host app (game list, editor, team setup, live controls)
 board.html     TV board
 js/common.js   data model, sample game, helpers
+js/starter-games.js  the starter game pack
 js/sync.js     host <-> board messaging
 js/host.js     host UI
 js/board.js    board rendering + effects
 js/sound.js    WebAudio sound effects
 server.js      optional LAN server (node server.js, PORT env var to change port)
 ```
+
+## Starter games
+
+Every game has 5 rounds. Rounds 1–3 are normal points, round 4 is double and round 5 is triple.
+
+| Game | Theme |
+| --- | --- |
+| Sample game — Family Night | Mornings, messy food, picnics, road trips, grandparents |
+| School Daze | Backpacks, homework excuses, the last day of school |
+| Food Fight | Pizza toppings, foods kids won't eat, party desserts |
+| Screen Time | Phones, video games, online videos |
+| Game Day | Sports, coaches, the Olympics |
+| Animal Kingdom | Zoo animals, pets, ocean life |
+| Holiday Hoopla | Halloween, Thanksgiving, winter holidays, New Year's |
+| Summer Break | The beach, ice cream, amusement parks, camping |
+| Home Sweet Home | Chores, things that go missing, things parents always say |
+| Wild Imagination | Superpowers, wizards, desert islands, dream jobs |
+| Brain Busters | Planets, landmarks, science, world food |
+
+New starter games show up in each player's library the next time they open the app. A starter game someone deletes stays deleted. **Bring them back** on the home screen restores any missing ones. To add more, append to `js/starter-games.js` and give each game a new, stable `id`.
 
 ### Game file format (import/export)
 

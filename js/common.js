@@ -99,9 +99,10 @@
       })
       .slice(0, FC.MAX_ANSWERS);
 
+  FC.SAMPLE_ID = 'starter-family-night';
   FC.sampleGame = () =>
     FC.normalizeGame({
-      id: 'sample-' + FC.uid(),
+      id: FC.SAMPLE_ID,
       title: 'Sample game — Family Night',
       rounds: [
         {

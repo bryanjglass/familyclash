@@ -6,11 +6,30 @@
 
   // ---------------------------------------------------------------- state
   let games = load('fc.games', null);
+  let seeded = load('fc.seeded', null); // starter game ids already offered to this device
   if (!Array.isArray(games)) {
-    games = [FC.sampleGame()];
-    save('fc.games', games);
+    games = [];
+    seeded = [];
+  } else if (!Array.isArray(seeded)) {
+    // Installed before starter packs existed: they already got (a copy of) the sample game.
+    seeded = [FC.SAMPLE_ID];
   }
   games = games.map(FC.normalizeGame);
+  seedStarters(false);
+
+  // Adds starter games this device hasn't seen yet. Deleted starters stay deleted
+  // unless `restore` is true (the "Restore starter games" link).
+  function seedStarters(restore) {
+    const added = FC.starterGames().filter(
+      (g) =>
+        (restore || !seeded.includes(g.id)) && !games.some((x) => x.id === g.id || x.title.trim() === g.title)
+    );
+    games.push(...added);
+    seeded = Array.from(new Set(seeded.concat(FC.starterGames().map((g) => g.id))));
+    save('fc.games', games);
+    save('fc.seeded', seeded);
+    return added.length;
+  }
 
   let teamsPref = load('fc.teams', null) || FC.defaultTeams();
   let room = load('fc.room', null);
@@ -189,6 +208,7 @@
             <li><b>Press Play</b>, name the two teams and pick their colours.</li>
             <li><b>Tap 📺 Connect TV</b> to put the big board on your Google TV, then run the game from this screen.</li>
           </ol>
+          <p class="muted small">Deleted one of the starter games? <a href="#" data-act="restoreStarters">Bring them back</a></p>
         </section>
       </main>`;
   }
@@ -733,6 +753,11 @@
       go('#/setup/' + el.dataset.id);
     },
     gameMenu: (el) => gameMenu(el.dataset.id),
+    restoreStarters: () => {
+      const n = seedStarters(true);
+      render();
+      toast(n ? `Restored ${plural(n, 'starter game')}` : 'All the starter games are already here');
+    },
 
     addRound: () => {
       const g = curGame();

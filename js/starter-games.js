@@ -121,6 +121,116 @@
         ['Name something that is really, really hot', 3, [['The sun', 38], ['Fire', 22], ['Lava', 18], ['Oven', 10], ['Stove', 6], ['Hot sauce', 4]]],
       ],
     },
+    {
+      id: 'starter-movie-night',
+      title: 'Movie Night',
+      rounds: [
+        ['Name a snack people eat at the movies', 1, [['Popcorn', 56], ['Candy', 18], ['Nachos', 10], ['Soda', 8], ['Hot dog', 4], ['Pretzel', 2]]],
+        ['Name a kind of movie', 1, [['Comedy', 30], ['Action', 24], ['Horror', 16], ['Animated', 12], ['Romance', 8], ['Sci-fi', 6]]],
+        ['Name something that annoys you at the movie theater', 1, [['People talking', 38], ['Phones lighting up', 20], ['Seat kickers', 14], ['Tall person in front', 12], ['Crying babies', 6], ['Sticky floors', 5]]],
+        ['Name something a superhero usually has', 2, [['Cape', 34], ['Mask', 26], ['Superpowers', 18], ['Secret identity', 10], ['Sidekick', 6], ['Logo on their chest', 4]]],
+        ['Name a reason to leave a movie early', 3, [['Bathroom break', 34], ["It's boring", 28], ['Too scary', 14], ['Feeling sick', 9], ['Phone call', 7], ['Crying kids', 4]]],
+      ],
+    },
+    {
+      id: 'starter-snack-attack',
+      title: 'Snack Attack',
+      rounds: [
+        ['Name a crunchy snack', 1, [['Chips', 40], ['Pretzels', 18], ['Popcorn', 14], ['Carrots', 10], ['Crackers', 8], ['Apples', 6]]],
+        ['Name a candy you might get trick-or-treating', 1, [['Chocolate bar', 34], ['Lollipops', 18], ['Gummy bears', 14], ['Candy corn', 12], ['Peanut butter cups', 10], ['Licorice', 6]]],
+        ['Name something people dip chips into', 1, [['Salsa', 38], ['Guacamole', 20], ['Queso', 16], ['French onion dip', 12], ['Ranch', 8], ['Hummus', 4]]],
+        ['Name a fast food menu item', 2, [['Burger', 40], ['French fries', 26], ['Chicken nuggets', 14], ['Pizza', 8], ['Tacos', 6], ['Milkshake', 4]]],
+        ["Name a snack you'd sneak from the kitchen at midnight", 3, [['Cookies', 32], ['Ice cream', 26], ['Chips', 16], ['Leftover pizza', 12], ['Candy', 8], ['Cereal', 4]]],
+      ],
+    },
+    {
+      id: 'starter-music-mania',
+      title: 'Music Mania',
+      rounds: [
+        ['Name a musical instrument', 1, [['Guitar', 36], ['Piano', 30], ['Drums', 16], ['Violin', 8], ['Trumpet', 5], ['Flute', 3]]],
+        ['Name a place people love to sing', 1, [['In the shower', 44], ['In the car', 26], ['Karaoke', 12], ['At a concert', 8], ['Church', 6], ['Birthday party', 2]]],
+        ['Name a kind of music', 1, [['Pop', 32], ['Rock', 24], ['Hip-hop', 18], ['Country', 12], ['Classical', 6], ['Jazz', 4]]],
+        ["Name something you'd see at a concert", 2, [['Bright lights', 28], ['Huge crowds', 24], ['The band', 18], ['Giant speakers', 12], ['T-shirts for sale', 8], ['Phones in the air', 6]]],
+        ['Name a song almost everyone knows the words to', 3, [['Happy Birthday', 52], ['Twinkle Twinkle', 16], ['The national anthem', 12], ['Jingle Bells', 10], ['The ABC song', 6]]],
+      ],
+    },
+    {
+      id: 'starter-winter-wonderland',
+      title: 'Winter Wonderland',
+      rounds: [
+        ['Name something you do in the snow', 1, [['Build a snowman', 34], ['Sledding', 26], ['Snowball fight', 18], ['Snow angels', 10], ['Shoveling', 6], ['Skiing', 4]]],
+        ["Name something you wear when it's cold", 1, [['Coat', 36], ['Gloves', 22], ['Hat', 18], ['Scarf', 12], ['Boots', 8], ['Earmuffs', 2]]],
+        ['Name a warm drink', 1, [['Hot chocolate', 46], ['Coffee', 26], ['Tea', 18], ['Apple cider', 6], ['Warm milk', 2]]],
+        ['Name something used to make a snowman', 2, [['Snow', 30], ['Carrot', 26], ['Coal', 16], ['Sticks', 12], ['Buttons', 8], ['Scarf', 6]]],
+        ['Name the best thing about a snow day', 3, [['No school', 54], ['Sleeping in', 18], ['Sledding', 12], ['Hot chocolate', 8], ['Video games all day', 6]]],
+      ],
+    },
+    {
+      id: 'starter-going-places',
+      title: 'Going Places',
+      rounds: [
+        ['Name something you pack for a vacation', 1, [['Clothes', 36], ['Toothbrush', 20], ['Swimsuit', 14], ['Phone charger', 12], ['Snacks', 8], ['Sunscreen', 6]]],
+        ["Name something you'd see at an airport", 1, [['Planes', 34], ['Security line', 20], ['Suitcases', 18], ['Long lines', 12], ['Pilots', 8], ['Gift shop', 4]]],
+        ['Name something kids ask on a long car ride', 1, [['Are we there yet?', 58], ['Can we stop?', 14], ["I'm hungry!", 10], ['I need the bathroom', 8], ['Can I use your phone?', 6]]],
+        ['Name a way to travel', 2, [['Car', 38], ['Plane', 28], ['Train', 14], ['Bus', 10], ['Boat', 6], ['Bike', 3]]],
+        ["Name something you'd buy as a souvenir", 3, [['T-shirt', 36], ['Keychain', 18], ['Magnet', 14], ['Postcard', 12], ['Snow globe', 10], ['Hat', 6]]],
+      ],
+    },
+    {
+      id: 'starter-birthday-bash',
+      title: 'Birthday Bash',
+      rounds: [
+        ["Name something you'd see at a birthday party", 1, [['Cake', 38], ['Balloons', 24], ['Presents', 18], ['Candles', 10], ['Party hats', 6], ['Piñata', 2]]],
+        ['Name a fun place to have a birthday party', 1, [['Bowling alley', 24], ['Trampoline park', 22], ['Pizza place', 18], ['Pool', 14], ['Laser tag', 10], ['Backyard', 8]]],
+        ['Name a party game', 1, [['Musical chairs', 28], ['Pin the tail on the donkey', 24], ['Hide and seek', 16], ['Piñata', 14], ['Freeze dance', 10], ['Duck duck goose', 6]]],
+        ['Name something you do right before blowing out the candles', 2, [['Make a wish', 54], ['Sing Happy Birthday', 26], ['Take a picture', 10], ['Take a deep breath', 6]]],
+        ['Name a birthday present a middle schooler would love', 3, [['Phone', 30], ['Video game', 24], ['Money', 18], ['Headphones', 12], ['Gift card', 8], ['Clothes', 4]]],
+      ],
+    },
+    {
+      id: 'starter-spooky-stuff',
+      title: 'Spooky Stuff',
+      rounds: [
+        ['Name something people are scared of', 1, [['Spiders', 30], ['The dark', 24], ['Heights', 18], ['Clowns', 12], ['Snakes', 10], ['Ghosts', 4]]],
+        ['Name a famous monster', 1, [['Vampire', 28], ['Zombie', 24], ['Werewolf', 18], ['Frankenstein', 14], ['Mummy', 8], ['Bigfoot', 4]]],
+        ["Name something you'd find in a haunted house", 1, [['Ghosts', 34], ['Cobwebs', 22], ['Creaky doors', 14], ['Skeletons', 12], ['Bats', 8], ['Creepy paintings', 6]]],
+        ["Name something you'd hear at a sleepover late at night", 2, [['Ghost stories', 30], ['Giggling', 24], ['Snoring', 14], ['Creepy noises', 12], ['"Go to sleep!"', 10], ['Rain', 4]]],
+        ["Name something you do when you're scared", 3, [['Scream', 36], ['Hide', 24], ['Run away', 18], ['Close your eyes', 10], ['Turn on the lights', 6], ['Grab someone', 4]]],
+      ],
+    },
+    {
+      id: 'starter-weekend-fun',
+      title: 'Weekend Fun',
+      rounds: [
+        ['Name something you do on a Saturday morning', 1, [['Sleep in', 38], ['Watch cartoons', 20], ['Eat pancakes', 14], ['Sports games', 12], ['Chores', 8], ['Play video games', 6]]],
+        ['Name something you need for a sleepover', 1, [['Sleeping bag', 34], ['Pillow', 24], ['Pajamas', 16], ['Snacks', 12], ['Toothbrush', 8], ['A movie', 4]]],
+        ['Name something people do at the mall', 1, [['Shop', 44], ['Eat at the food court', 22], ['Hang out with friends', 14], ['Play at the arcade', 8], ['Window shop', 6], ['People watch', 4]]],
+        ['Name a board game families play', 2, [['Monopoly', 34], ['Scrabble', 16], ['Clue', 14], ['Sorry!', 12], ['Candy Land', 10], ['Chess', 8]]],
+        ['Name something families argue about', 3, [['What to watch on TV', 30], ['Chores', 24], ['Screen time', 16], ['Where to eat', 14], ['Who sits in front', 10], ['Bedtime', 4]]],
+      ],
+    },
+    {
+      id: 'starter-once-upon-a-time',
+      title: 'Once Upon a Time',
+      rounds: [
+        ['Name a fairy tale character', 1, [['Cinderella', 30], ['Snow White', 22], ['Little Red Riding Hood', 16], ['Goldilocks', 12], ['Rapunzel', 10], ['The Big Bad Wolf', 6]]],
+        ["Name something you'd find in a castle", 1, [['King or queen', 30], ['Throne', 22], ['Moat', 16], ['Knights', 12], ['Dragon', 10], ['Tower', 6]]],
+        ['Name a superhero', 1, [['Superman', 34], ['Spider-Man', 28], ['Batman', 22], ['Wonder Woman', 8], ['Iron Man', 6]]],
+        ['Name something that happens at the end of a fairy tale', 2, [['Happily ever after', 48], ['A wedding', 20], ['The villain loses', 14], ["True love's kiss", 10], ['The spell is broken', 4]]],
+        ['Name a magical creature', 3, [['Unicorn', 34], ['Dragon', 28], ['Fairy', 16], ['Mermaid', 10], ['Phoenix', 6], ['Elf', 4]]],
+      ],
+    },
+    {
+      id: 'starter-totally-gross',
+      title: 'Totally Gross',
+      rounds: [
+        ['Name something gross you might find in a school cafeteria', 1, [['Mystery meat', 30], ['Old gum', 22], ['Spilled milk', 16], ['Hair in the food', 14], ['Moldy bread', 8], ['Bugs', 6]]],
+        ['Name something that smells really bad', 1, [['Garbage', 30], ['Stinky feet', 24], ['Skunk', 20], ['Rotten eggs', 12], ['Dirty socks', 8], ['The bathroom', 4]]],
+        ['Name something kids do that grosses out their parents', 1, [['Pick their nose', 42], ['Burp', 22], ["Don't wash their hands", 14], ['Chew with mouth open', 12], ['Wipe nose on sleeve', 6]]],
+        ["Name something you'd hate to step on barefoot", 2, [['A LEGO brick', 40], ['Broken glass', 18], ['Gum', 14], ['Dog poop', 12], ['A bug', 8], ['Thumbtack', 6]]],
+        ['Name something slimy', 3, [['Slugs', 28], ['Slime', 24], ['Snails', 18], ['Worms', 12], ['Boogers', 10], ['Frogs', 6]]],
+      ],
+    },
   ];
 
   // The original sample game first, then the starter pack.

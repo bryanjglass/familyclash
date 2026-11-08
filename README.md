@@ -18,7 +18,7 @@ A survey-style family game show. One person (the **host**) runs the game from a 
 
 ## Features
 
-- **Game library:** create, edit, duplicate, delete, import and export (JSON) games. It comes with **11 ready-to-play games** written for families with middle-schoolers (see below).
+- **Game library:** create, edit, duplicate, delete, import and export (JSON) games. It comes with **21 ready-to-play games** written for families with middle-schoolers (see below).
 - **Editor:** one card per round with a question, up to 8 answers with points, and a normal/double/triple points setting.
   - Everything autosaves.
   - Pressing Enter jumps to the next box and adds a new answer row at the end.
@@ -91,6 +91,16 @@ Every game has 5 rounds. Rounds 1–3 are normal points, round 4 is double and r
 | Home Sweet Home | Chores, things that go missing, things parents always say |
 | Wild Imagination | Superpowers, wizards, desert islands, dream jobs |
 | Brain Busters | Planets, landmarks, science, world food |
+| Movie Night | Movie snacks, kinds of movies, theater pet peeves, superheroes |
+| Snack Attack | Crunchy snacks, trick-or-treat candy, dips, fast food, midnight snacks |
+| Music Mania | Instruments, singing, kinds of music, concerts, songs everyone knows |
+| Winter Wonderland | Snow fun, cold-weather clothes, warm drinks, snow days |
+| Going Places | Packing, airports, car-ride questions, souvenirs |
+| Birthday Bash | Party places, party games, wishes, presents |
+| Spooky Stuff | Fears, monsters, haunted houses, sleepovers |
+| Weekend Fun | Saturday mornings, sleepovers, the mall, board games |
+| Once Upon a Time | Fairy tales, castles, superheroes, magical creatures |
+| Totally Gross | Cafeteria horrors, bad smells, slimy things, stepping on a LEGO |
 
 New starter games show up in each player's library the next time they open the app. A starter game someone deletes stays deleted. **Bring them back** on the home screen restores any missing ones. To add more, append to `js/starter-games.js` and give each game a new, stable `id`.
 

@@ -34,6 +34,12 @@ A survey-style family game show. One person (the **host**) runs the game from a 
   - Tap a team to mark who's playing.
   - Tap a score to adjust it by hand.
   - Hide or show the question on the TV.
+- **Guess timer** (optional): choose Off or 5–60 seconds per guess on the setup screen, or mid-game from **⚙** or the **⋯** menu.
+  - A countdown ring shows on the TV, with ticks in the last 5 seconds and a buzzer at zero.
+  - The clock can start automatically for each new guess (after a reveal or a wrong answer), or you start it with **▶ Start clock** or the `T` key.
+  - Running out of time can count as a wrong answer, or just sound the buzzer.
+  - Auto-start pauses once a team has 3 strikes, so you start the clock yourself for the steal attempt.
+  - The host's clock decides when time is up, and the board corrects for clock differences between devices.
 - **Undo** for every action, so a mis-tap is never a problem.
 - **Resume:** a game in progress survives a page reload.
 - **Board:**
@@ -46,6 +52,7 @@ A survey-style family game show. One person (the **host**) runs the game from a 
   - `X` marks a wrong answer.
   - `←`/`→` set who's playing.
   - `Q` hides or shows the question.
+  - `T` starts or stops the guess timer.
   - `Ctrl+Z` undoes the last action.
 
 ## How it fits together

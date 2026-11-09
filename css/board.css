@@ -216,6 +216,35 @@ body.idle { cursor: none; }
   border: 0; background: rgba(0,0,0,.55); color: #fff; cursor: pointer;
 }
 
+/* ---- guess timer ---- */
+.timer {
+  --p: 1;
+  position: absolute; top: 1.8rem; right: 3.2rem; z-index: 2;
+  width: 6.4rem; height: 6.4rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(closest-side, #1b1440 79%, transparent 80% 100%),
+    conic-gradient(var(--gold) calc(var(--p) * 360deg), rgba(255,255,255,.12) 0);
+  box-shadow: 0 .4rem 1.4rem rgba(0,0,0,.4);
+}
+.timer span { font-size: 2.9rem; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--gold); line-height: 1; }
+.timer.warn {
+  background:
+    radial-gradient(closest-side, #1b1440 79%, transparent 80% 100%),
+    conic-gradient(#ff8a3d calc(var(--p) * 360deg), rgba(255,255,255,.12) 0);
+}
+.timer.warn span { color: #ff8a3d; }
+.timer.low {
+  background:
+    radial-gradient(closest-side, #5a0a1c 79%, transparent 80% 100%),
+    conic-gradient(var(--red) calc(var(--p) * 360deg), rgba(255,255,255,.12) 0);
+  animation: tpulse .5s ease-in-out infinite alternate;
+}
+.timer.low span { color: #fff; }
+@keyframes tpulse { to { transform: scale(1.1); } }
+/* Leave room for the clock beside a long question. */
+body.timer-on #question { max-width: 46rem; }
+
 @media (prefers-reduced-motion: reduce) {
-  .tile-inner, .banner.go, .big-x, .trophy, .confetti i { transition: none !important; animation-duration: .01s !important; }
+  .tile-inner, .banner.go, .big-x, .trophy, .confetti i, .timer { transition: none !important; animation-duration: .01s !important; }
 }

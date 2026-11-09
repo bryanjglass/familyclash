@@ -47,6 +47,11 @@
     tone(130, 0, 0.75, { type: 'sawtooth', gain: 0.22 });
     tone(138, 0, 0.75, { type: 'square', gain: 0.1 });
   };
+  S.tick = (urgent) => tone(urgent ? 1760 : 1320, 0, 0.08, { type: 'square', gain: urgent ? 0.12 : 0.07 });
+  S.timeUp = () => {
+    tone(196, 0, 0.9, { type: 'sawtooth', gain: 0.22 });
+    tone(98, 0, 0.9, { type: 'square', gain: 0.12 });
+  };
   S.award = () =>
     [523.3, 659.3, 784, 1046.5].forEach((f, i) => tone(f, i * 0.09, 0.45, { type: 'triangle', gain: 0.25 }));
   S.round = () => {

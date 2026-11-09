@@ -32,6 +32,9 @@
   }
 
   let teamsPref = load('fc.teams', null) || FC.defaultTeams();
+  // Guess timer: seconds (0 = off), auto-start for each new guess, count running out as a wrong answer.
+  const TIMER_PRESETS = [0, 5, 10, 15, 20, 30, 45, 60];
+  let timerPrefs = Object.assign({ seconds: 15, autoNext: true, autoStrike: true }, load('fc.timerPrefs', {}));
   let room = load('fc.room', null);
   if (!room) {
     room = FC.roomCode();
@@ -61,7 +64,8 @@
     return Date.now() - boardSeenAt < 10000;
   }
   function pushState() {
-    sync.send({ type: 'state', state: live });
+    sync.send({ type: 'state', state: live, sentAt: Date.now() });
+    scheduleTimeUp();
   }
   function boardUrl() {
     return new URL('board.html?room=' + room, location.href).href;
@@ -413,6 +417,11 @@
           ${rounds.length < g.rounds.length && rounds.length ? ` · ${g.rounds.length - rounds.length} empty round(s) will be skipped` : ''}
           · <a href="#/edit/${g.id}">Edit questions</a></p>
         <div class="team-grid">${setup.teams.map(teamCard).join('')}</div>
+        <section class="card timer-setup">
+          <h3>⏱ Guess timer</h3>
+          <p class="muted small">How long each player gets to answer.</p>
+          ${timerControls(timerPrefs)}
+        </section>
         <button class="btn primary huge full" data-act="startGame" ${rounds.length ? '' : 'disabled'}>Let's play ▶</button>
       </main>`;
   }
@@ -440,6 +449,8 @@
         awardedAmount: 0,
         control: null,
         showQuestion: true,
+        timerCfg: Object.assign({}, timerPrefs),
+        timer: null,
         seq: 0,
         fx: null,
       };
@@ -456,7 +467,13 @@
   function commit(mutate, fx) {
     history.push(JSON.stringify(live));
     if (history.length > 60) history.shift();
+    quiet(mutate, fx);
+  }
+
+  // A state change that isn't worth an undo step (starting/stopping the timer, settings).
+  function quiet(mutate, fx) {
     mutate(live);
+    if (live.screen !== 'round') timerOff(live);
     live.seq++;
     if (fx) live.fx = Object.assign({ id: live.seq }, fx);
     persistLive();
@@ -468,6 +485,7 @@
     if (!history.length) return;
     const seq = live.seq;
     live = JSON.parse(history.pop());
+    timerOff(live); // never resurrect a clock that has already run down
     live.seq = seq + 1;
     live.fx = { id: live.seq, kind: 'undo' };
     persistLive();
@@ -475,6 +493,100 @@
     render();
     toast('Undone');
   }
+
+  // ---------------------------------------------------------- guess timer
+  const tcfg = () => (live && live.timerCfg) || { seconds: 0, autoNext: false, autoStrike: false };
+  const timerRunning = () => !!(live && live.timer && live.timer.running);
+
+  function timerOn(s) {
+    const secs = tcfg().seconds;
+    if (!secs) return timerOff(s);
+    s.timer = { running: true, duration: secs, endsAt: Date.now() + secs * 1000 };
+  }
+  function timerOff(s) {
+    if (s.timer) s.timer.running = false;
+  }
+  // After a guess: start the clock for the next player if that's switched on and the round is still live.
+  function nextGuessTimer(s) {
+    const c = tcfg();
+    if (c.seconds && c.autoNext && s.screen === 'round' && s.awarded === null && s.strikes < 3 && s.revealed.some((v) => !v)) timerOn(s);
+    else timerOff(s);
+  }
+
+  let timeUpTimer = null;
+  function scheduleTimeUp() {
+    clearTimeout(timeUpTimer);
+    if (!timerRunning()) return;
+    timeUpTimer = setTimeout(timeUp, Math.max(0, live.timer.endsAt - Date.now()));
+  }
+  function timeUp() {
+    if (!timerRunning()) return;
+    if (Date.now() < live.timer.endsAt - 30) return scheduleTimeUp();
+    if (tcfg().autoStrike && live.screen === 'round' && live.awarded === null) {
+      const count = live.strikes >= 3 ? 1 : live.strikes + 1;
+      commit(
+        (s) => {
+          timerOff(s);
+          s.strikes = Math.min(3, s.strikes + 1);
+          nextGuessTimer(s);
+        },
+        { kind: 'timeup', strike: true, count }
+      );
+    } else {
+      quiet((s) => timerOff(s), { kind: 'timeup' });
+    }
+  }
+
+  function toggleTimer() {
+    if (!tcfg().seconds) return timerDialog();
+    quiet((s) => (timerRunning() ? timerOff(s) : timerOn(s)));
+  }
+
+  function timerControls(c) {
+    return `<div class="seg" role="radiogroup" aria-label="Seconds per guess">
+        ${TIMER_PRESETS.map(
+          (v) => `<button class="seg-btn ${c.seconds === v ? 'on' : ''}" data-act="timerSecs" data-secs="${v}" role="radio" aria-checked="${c.seconds === v}">${v ? v + 's' : 'Off'}</button>`
+        ).join('')}
+      </div>
+      <label class="check ${c.seconds ? '' : 'dim'}"><input type="checkbox" data-topt="autoNext" ${c.autoNext ? 'checked' : ''} ${c.seconds ? '' : 'disabled'}> Start the clock automatically for each new guess</label>
+      <label class="check ${c.seconds ? '' : 'dim'}"><input type="checkbox" data-topt="autoStrike" ${c.autoStrike ? 'checked' : ''} ${c.seconds ? '' : 'disabled'}> Running out of time counts as a wrong answer</label>`;
+  }
+
+  // Applies a timer setting change — to the setup screen's defaults, or to the game being played.
+  function setTimerOpt(key, value) {
+    timerPrefs = Object.assign({}, timerPrefs, { [key]: value });
+    save('fc.timerPrefs', timerPrefs);
+    if (view === 'play' && live) {
+      quiet((s) => {
+        s.timerCfg = Object.assign({}, tcfg(), { [key]: value });
+        if (key === 'seconds') timerOff(s);
+      });
+      const d = document.querySelector('dialog.timer-dlg');
+      if (d) d.querySelector('.timer-ctl').innerHTML = timerControls(tcfg());
+    } else if (view === 'setup') {
+      render();
+    }
+  }
+
+  function timerDialog() {
+    modal(`<h2>⏱ Guess timer</h2>
+      <p class="muted">How long each player gets to answer. Changes apply straight away.</p>
+      <div class="timer-ctl">${timerControls(tcfg())}</div>
+      <div class="row end"><button class="btn primary" data-close>Done</button></div>`, 'timer-dlg');
+  }
+
+  // Keep the host's countdown display ticking without re-rendering the page.
+  setInterval(() => {
+    const num = document.getElementById('timer-num');
+    if (!num || !live || !live.timer) return;
+    const t = live.timer;
+    const left = t.running ? Math.max(0, t.endsAt - Date.now()) : 0;
+    num.textContent = t.running ? Math.ceil(left / 1000) : '–';
+    const bar = document.getElementById('timer-bar');
+    if (bar) bar.style.width = (t.running ? (left / (t.duration * 1000)) * 100 : 0) + '%';
+    const card = document.getElementById('timer-card');
+    if (card) card.classList.toggle('low', t.running && left <= 3000);
+  }, 100);
 
   const curRound = () => live.rounds[live.round];
   const mult = () => (curRound() ? curRound().multiplier : 1);
@@ -491,6 +603,7 @@
         s.awardedAmount = 0;
         s.control = null;
         s.showQuestion = true;
+        s.timer = null;
       },
       { kind: 'round' }
     );
@@ -508,6 +621,7 @@
           s.revealed[i] = 1;
           s.bank += pts;
         } else s.revealed[i] = 2;
+        nextGuessTimer(s);
       },
       { kind: 'reveal', index: i }
     );
@@ -515,7 +629,13 @@
 
   function strike() {
     const count = live.strikes >= 3 ? 1 : live.strikes + 1;
-    commit((s) => (s.strikes = Math.min(3, s.strikes + 1)), { kind: 'strike', count });
+    commit(
+      (s) => {
+        s.strikes = Math.min(3, s.strikes + 1);
+        nextGuessTimer(s);
+      },
+      { kind: 'strike', count }
+    );
   }
 
   function award(t) {
@@ -528,6 +648,7 @@
         s.awardedAmount = amount;
         s.bank = 0;
         s.control = t;
+        timerOff(s);
       },
       { kind: 'award', team: t, amount }
     );
@@ -570,10 +691,11 @@
         ${live.screen === 'round' ? `<button class="btn" data-m="restart">↺ Restart this round</button>` : ''}
         ${live.screen === 'round' ? `<button class="btn" data-m="toggleQ">${live.showQuestion ? '🙈 Hide' : '👁 Show'} the question on the TV</button>` : ''}
         <button class="btn" data-m="tv">📺 Connect the TV</button>
+        <button class="btn" data-m="timer">⏱ Guess timer: ${tcfg().seconds ? tcfg().seconds + ' seconds' : 'off'}</button>
         ${live.screen !== 'over' ? `<button class="btn" data-m="end">🏁 End game & show the winner</button>` : ''}
         <button class="btn" data-m="new">✚ Start a different game</button>
       </div>
-      <p class="muted small">Netbook shortcuts: <kbd>1</kbd>–<kbd>8</kbd> reveal · <kbd>X</kbd> wrong answer · <kbd>←</kbd>/<kbd>→</kbd> who's playing · <kbd>Q</kbd> show/hide question · <kbd>Ctrl</kbd>+<kbd>Z</kbd> undo</p>
+      <p class="muted small">Netbook shortcuts: <kbd>1</kbd>–<kbd>8</kbd> reveal · <kbd>X</kbd> wrong answer · <kbd>←</kbd>/<kbd>→</kbd> who's playing · <kbd>Q</kbd> show/hide question · <kbd>T</kbd> start/stop timer · <kbd>Ctrl</kbd>+<kbd>Z</kbd> undo</p>
       <div class="row end"><button class="btn ghost" data-close>Close</button></div>`);
     d.addEventListener('click', (e) => {
       const b = e.target.closest('[data-m]');
@@ -583,6 +705,7 @@
       if (m === 'restart') startRound(live.round);
       else if (m === 'toggleQ') commit((s) => (s.showQuestion = !s.showQuestion));
       else if (m === 'tv') tvDialog();
+      else if (m === 'timer') timerDialog();
       else if (m === 'end') confirmDialog('End the game now?', 'End game', () => commit((s) => (s.screen = 'over'), { kind: 'over' }));
       else if (m === 'new') go('#/');
     });
@@ -654,6 +777,24 @@
       .join('')}</div>`;
   }
 
+  function timerCard() {
+    const c = tcfg();
+    if (!c.seconds)
+      return `<button class="btn ghost timer-add" data-act="timerSettings">⏱ Add a guess timer</button>`;
+    const t = live.timer;
+    const on = timerRunning();
+    const left = on ? Math.max(0, t.endsAt - Date.now()) : 0;
+    return `<div class="card timer-card ${on ? 'running' : ''}" id="timer-card">
+        <div class="timer-top">
+          <span class="timer-num" id="timer-num">${on ? Math.ceil(left / 1000) : '–'}</span>
+          <span class="timer-meta"><b>Guess timer</b><span class="muted small">${c.seconds}s per guess${c.autoNext ? ' · auto-starts' : ''}${c.autoStrike ? ' · wrong when time runs out' : ''}</span></span>
+          <button class="btn icon ghost" data-act="timerSettings" aria-label="Timer settings">⚙</button>
+        </div>
+        <div class="timer-track"><i id="timer-bar" style="width:${on ? (left / (t.duration * 1000)) * 100 : 0}%"></i></div>
+        <button class="btn ${on ? '' : 'primary'} big" data-act="timerToggle">${on ? '■ Stop the clock' : `▶ Start ${c.seconds}s clock`}</button>
+      </div>`;
+  }
+
   function viewPlay() {
     const s = live;
     const n = s.rounds.length;
@@ -716,6 +857,7 @@
               .join('')}</ol>
           </section>
           <section class="ctrl-col">
+            ${timerCard()}
             <div class="card strike-card">
               <div class="strikes" aria-label="${s.strikes} strikes">${[0, 1, 2].map((i) => `<span class="x ${i < s.strikes ? 'on' : ''}">✕</span>`).join('')}</div>
               <button class="btn danger big" data-act="strike">✕ Wrong answer</button>
@@ -824,7 +966,17 @@
     },
     adjust: (el) => adjustDialog(Number(el.dataset.t)),
     toggleQ: () => commit((s) => (s.showQuestion = !s.showQuestion)),
-    revealAll: () => commit((s) => (s.revealed = s.revealed.map((v) => v || 2)), { kind: 'revealAll' }),
+    revealAll: () =>
+      commit(
+        (s) => {
+          s.revealed = s.revealed.map((v) => v || 2);
+          timerOff(s);
+        },
+        { kind: 'revealAll' }
+      ),
+    timerToggle: toggleTimer,
+    timerSettings: timerDialog,
+    timerSecs: (el) => setTimerOpt('seconds', Number(el.dataset.secs)),
     next: nextRound,
     playAgain: () => {
       const g = games.find((x) => x.id === live.gameId);
@@ -869,6 +1021,11 @@
     }
   });
 
+  document.addEventListener('change', (e) => {
+    const k = e.target.dataset && e.target.dataset.topt;
+    if (k) setTimerOpt(k, e.target.checked);
+  });
+
   // Enter moves to the next box while typing answers (and adds a row at the end).
   app.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter' || view !== 'edit') return;
@@ -907,6 +1064,7 @@
     if (/^[1-8]$/.test(k)) reveal(Number(k) - 1);
     else if (k === 'x') strike();
     else if (k === 'q') actions.toggleQ();
+    else if (k === 't') toggleTimer();
     else if (k === 'arrowleft') commit((s) => (s.control = 0));
     else if (k === 'arrowright') commit((s) => (s.control = 1));
     else return;
@@ -914,4 +1072,5 @@
   });
 
   route();
+  scheduleTimeUp(); // a clock may have been running when the page was reloaded
 })();

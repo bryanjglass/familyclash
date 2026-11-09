@@ -15,12 +15,16 @@
   let lastFx = -1;
   let builtKey = null;
   let heardHost = false;
+  let clockOffset = 0;
   const shown = [0, 0]; // scores currently displayed (for count-up animation)
 
   // ------------------------------------------------------------ connection
   sync.on((msg) => {
     if (msg.type !== 'state') return;
     heardHost = true;
+    // The host stamps each update with its clock; the difference to ours covers clock drift
+    // between devices (and network delay), so the countdown ends when the host's does.
+    clockOffset = msg.sentAt ? Date.now() - msg.sentAt : 0;
     apply(msg.state);
   });
   sync.onConnect = () => sync.send({ type: 'hello' });
@@ -114,6 +118,7 @@
       animateScore(i, t.score);
     });
     $('bank-val').textContent = s.awarded === null ? s.bank : 0;
+    renderTimer();
   }
 
   function renderRound() {
@@ -155,6 +160,36 @@
       requestAnimationFrame(() => requestAnimationFrame(() => tiles.classList.remove('no-anim')));
     }
     tiles.querySelectorAll('.tile[data-i]').forEach((t) => t.classList.toggle('revealed', !!s.revealed[Number(t.dataset.i)]));
+  }
+
+  // ------------------------------------------------------------ guess timer
+  let timerRaf = null;
+  let lastTickSec = null;
+  function renderTimer() {
+    const t = state && state.screen === 'round' ? state.timer : null;
+    const el = $('timer');
+    const running = !!(t && t.running);
+    document.body.classList.toggle('timer-on', running);
+    el.hidden = !running;
+    cancelAnimationFrame(timerRaf);
+    if (!running) return;
+    const endsAt = t.endsAt + clockOffset;
+    const total = t.duration * 1000;
+    lastTickSec = null;
+    const frame = () => {
+      const left = Math.max(0, endsAt - Date.now());
+      const sec = Math.ceil(left / 1000);
+      $('timer-num').textContent = sec;
+      el.style.setProperty('--p', Math.min(1, left / total));
+      el.classList.toggle('low', left <= 3000);
+      el.classList.toggle('warn', left <= 5000);
+      if (sec !== lastTickSec) {
+        if (lastTickSec !== null && sec > 0 && sec <= 5) FC.Sound.tick(sec <= 3);
+        lastTickSec = sec;
+      }
+      if (left > 0) timerRaf = requestAnimationFrame(frame);
+    };
+    frame();
   }
 
   const scoreAnims = [null, null];
@@ -246,6 +281,11 @@
       }
       case 'round':
         FC.Sound.round();
+        break;
+      case 'timeup':
+        FC.Sound.timeUp();
+        if (fx.strike) showStrikes(fx.count || 1);
+        else banner("⏱ Time's up!", '#ff4d6a');
         break;
       case 'over':
         FC.Sound.fanfare();
